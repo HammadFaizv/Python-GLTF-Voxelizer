@@ -7,7 +7,7 @@ of which it might not be best for you.
 The voxelizer now has a function to convert blocks to minecraft blocks and save them as a .schematic file
 
 Block Data is taken from the repo: `https://github.com/LucasDower/ObjToSchematic/tree/main`
-Took inspiration from (Lucas Dower)[https://github.com/LucasDower] for the project.
+Took inspiration from [Lucas Dower](https://github.com/LucasDower) for the project.
 
 ## Problems
 * It is not optimal in any way.
