@@ -1,3 +1,6 @@
+import nbtschematic as nbt
+from assign import nearest_block_by_color
+
 def create_voxel_obj_file(file_path, voxel_positions, voxel_colors, voxel_size=1.0):
     vertices = []
     current_vertex_index = 1  # Index of the current vertex
@@ -25,3 +28,24 @@ def create_voxel_obj_file(file_path, voxel_positions, voxel_colors, voxel_size=1
                 offset_face = [idx + current_vertex_index - 1 for idx in face]
                 obj_file.write(f"f {offset_face[0]} {offset_face[1]} {offset_face[2]} {offset_face[3]}\n")
             current_vertex_index += 8
+
+def export_schematic(voxel, voxel_color, dim, offset, filename):
+
+    print('Preparing schematic')
+    block_data = []
+    for color in voxel_color:
+        blk = nearest_block_by_color(color)
+        block_data.append(blk)
+        # print('->',blk['id'])
+
+    sf = nbt.SchematicFile(shape=(dim+1, dim+1, dim+1)) # size issues :)
+    print(len(block_data))
+    for blk, data in zip(voxel, block_data):
+        x = blk[0] - offset[0]
+        y = blk[1] - offset[1]
+        z = blk[2] - offset[2]
+        sf.blocks[z, x, y] = data['id']
+        sf.data[z, x, y] = data['meta']
+
+    sf.save(filename)
+    print('Saved schematic')

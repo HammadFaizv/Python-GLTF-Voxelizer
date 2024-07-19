@@ -4,7 +4,7 @@ import os
 from Vertex import get_triangles
 from preprocess import resize_model
 from Voxel import triangle_voxalize
-from export import create_voxel_obj_file
+from export import create_voxel_obj_file, export_schematic
 
 # loading the gltf file
 glb = GLTF.load('meshes/mutant_skull.glb')
@@ -21,7 +21,7 @@ triangles_color = np.array(triangles_color)
 # print('Color : ')
 # print(triangles_color[:5])
 
-voxel_size = [80,80,80]
+voxel_size = [60,60,60]
 triangles = resize_model(triangles, voxel_size)
 
 voxel = []
@@ -49,8 +49,15 @@ for a in range (len(voxel)):
     y_points.append(voxel[a][1])
     z_points.append(voxel[a][2])
 
-dimensions = [ max(x_points), max(y_points), max(z_points) ]
-print("Dimensions : ", dimensions)
+max_dimensions = [ max(x_points), max(y_points), max(z_points) ]
+min_dimensions = [ min(x_points), min(y_points), min(z_points) ]
+print("Dimensions : ", max_dimensions, '&', min_dimensions)
+
+offset = [0, 0, 0]
+
+# setup offset
+for i in range(3):
+    offset[i] = min(min_dimensions[i],0)
 
 # fancy way to save files
 items = os.listdir('output')
@@ -58,6 +65,11 @@ files = [item for item in items if os.path.isfile(os.path.join('output', item))]
 cnt = len(files)
 
 ## save voxel
-file_path = f'output/glb_voxel_model{cnt+1}.obj'
-create_voxel_obj_file(file_path, voxel, voxel_color)
-print(f"Voxel model saved to {file_path}")
+# file_path = f'output/glb_voxel_model{cnt+1}.obj'
+# create_voxel_obj_file(file_path, voxel, voxel_color)
+# print(f"Voxel model saved to {file_path}")
+
+## save schematic
+file_path = f'schem/glb_schematic{cnt+1}.schematic'
+export_schematic(voxel, voxel_color, voxel_size[0], offset, file_path)
+print(f"Schematic saved to {file_path}")
